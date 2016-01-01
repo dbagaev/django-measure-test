@@ -1,15 +1,15 @@
-<h1>Test: {{ test.testType }}</h1>
+<h1>Test: {{ test.Type }}</h1>
 
 <h2>Metrics</h2>
 <ul>
-{% for m in metrics %}
+{% for m in test.Metrics %}
     <li>{{ m.Name }}</li>
 {% endfor %}
 </ul>
 <h2>Cases</h2>
 <ul>
-{% for case in cases %}
-    <li>{{ case.name }} [<a href="{% url 'django-measure-test:test.case.run' test_id=test.testType case_name=case.name %}">Run</a>]</li>
+{% for case in test.Cases %}
+    <li>{{ case.Name }} [<a href="{% url 'django-measure-test:test.case.run' test_id=test.Type case_name=case.Name %}">Run</a>]</li>
 {% endfor %}
 </ul>
 

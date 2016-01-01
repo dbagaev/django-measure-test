@@ -7,12 +7,14 @@
 
     <h1>Tests found:</h1>
 
+    <p>[<a href="{% url 'django-measure-test:reload' %}">Reload</a>]</p>
+
     <ul>
         {% for test in tests %}
-        <li><a href="{% url 'django-measure-test:test.view' test.testType %}">{{ test.testType }}</a>
+        <li><a href="{% url 'django-measure-test:test.view' test.Type %}">{{ test.Type }}</a>
             <ul>
-            {% for t in test.findTests %}
-                <li>{{ t.name }}</li>
+            {% for c in test.Cases %}
+                <li>{{ c.Name }}</li>
             {% endfor %}
             </ul>
         </li>
