@@ -1,13 +1,15 @@
 ﻿{% extends 'base.html' %}
 
-{% block body_block %}
+{% block title %}List of all system tests{% endblock %}
+
+{% block content %}
 <body>
 
     <h1>Tests found:</h1>
 
     <ul>
         {% for test in tests %}
-        <li>{{ test.testType }}
+        <li><a href="{% url 'django-measure-test:test.view' test.testType %}">{{ test.testType }}</a>
             <ul>
             {% for t in test.findTests %}
                 <li>{{ t.name }}</li>
