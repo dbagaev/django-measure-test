@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 from . import reload
 
-app_name = 'django-measure-test'
+app_name = 'django-pyxperiment'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

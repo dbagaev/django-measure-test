@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class MeasuretestwebuiConfig(AppConfig):
-    name = 'MeasureTestWebUI'
+class pyxperiment_ui_Config(AppConfig):
+    name = 'pyxperiment_ui'

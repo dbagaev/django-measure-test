@@ -1,22 +1,26 @@
 from django.db import models
-from MeasureTest.TestMetric import TestMetric
+
+from pyxperiment.metric import Metric as exp_Metric
 
 # Create your models here.
-class Test(models.Model):
+class ExperimentSet(models.Model):
     id = models.IntegerField(primary_key=True)
     Type = models.CharField(max_length=128)
 
-    def Cases(self):
-        return TestCase.objects.filter(Test=self)
+    def Experiments(self):
+        return Experiment.objects.filter(ExperimentSet=self)
 
     def Metrics(self):
-        return TestMetric.objects.filter(Test=self)
+        return Metric.objects.filter(ExperimentSet=self)
 
 
-class TestCase(models.Model):
+class Experiment(models.Model):
     id = models.IntegerField(primary_key=True)
     Name = models.CharField(max_length=256)
-    Test = models.ForeignKey('Test', on_delete=models.CASCADE)
+    ExperimentSet = models.ForeignKey('ExperimentSet', on_delete=models.CASCADE)
+
+    def Metrics(self):
+        return Metric.objects.filter(Experiment=self)
 
 
 class Run(models.Model):
@@ -24,59 +28,58 @@ class Run(models.Model):
     Started = models.TimeField()
 
 
-class TestRun(models.Model):
+class ExperimentRun(models.Model):
     id = models.IntegerField(primary_key=True)
     Started = models.TimeField()
     Success = models.IntegerField()
     Run = models.ForeignKey('Run', on_delete=models.CASCADE)
-    Test = models.ForeignKey('TestCase', on_delete=models.CASCADE)
+    Experiment = models.ForeignKey('Experiment', on_delete=models.CASCADE)
 
 
-class TestMetric(models.Model):
+class Metric(models.Model):
     VALUE_TYPES = (
-        (TestMetric.TYPE_FLOAT, 'Float'),
-        (TestMetric.TYPE_INTEGER, 'Integer'),
-        (TestMetric.TYPE_BOOLEAN, 'Boolean'),
-        (TestMetric.TYPE_STRING, 'String'),
-        (TestMetric.TYPE_FILE, 'File')
+        (exp_Metric.TYPE_FLOAT, 'Float'),
+        (exp_Metric.TYPE_INTEGER, 'Integer'),
+        (exp_Metric.TYPE_BOOLEAN, 'Boolean'),
+        (exp_Metric.TYPE_STRING, 'String'),
+        (exp_Metric.TYPE_FILE, 'File')
     )
     id = models.IntegerField(primary_key=True)
     Name = models.CharField(max_length=64)
     Type = models.IntegerField(choices=VALUE_TYPES)
-    Test = models.ForeignKey('Test', on_delete=models.CASCADE)
 
+    ExperimentSet = models.ForeignKey('ExperimentSet', on_delete=models.CASCADE)
 
-class TestCaseMetricValue(models.Model):
+class MetricValue(models.Model):
     id = models.IntegerField(primary_key=True)
-    TestMetric = models.ForeignKey('TestMetric', on_delete=models.CASCADE)
-    TestCase = models.ForeignKey('TestCase', on_delete=models.CASCADE)
-    TestRun = models.ForeignKey('TestRun', on_delete=models.CASCADE)
+    ExperimentRun = models.ForeignKey('ExperimentRun', on_delete=models.CASCADE)
+    Run = models.ForeignKey('Run', on_delete=models.CASCADE)
+    Metric = models.ForeignKey('Metric', on_delete=models.CASCADE)
 
-
-class TestMetricStringValue(models.Model):
+class MetricStringValue(models.Model):
     id = models.IntegerField(primary_key=True)
-    Metric = models.ForeignKey('TestCaseMetricValue', on_delete=models.CASCADE)
+    Metric = models.ForeignKey('MetricValue', on_delete=models.CASCADE)
     Value = models.CharField(max_length=256)
 
 
-class TestMetricFloatValue(models.Model):
+class MetricFloatValue(models.Model):
     id = models.IntegerField(primary_key=True)
-    Metric = models.ForeignKey('TestCaseMetricValue', on_delete=models.CASCADE)
+    Metric = models.ForeignKey('MetricValue', on_delete=models.CASCADE)
     Value = models.FloatField()
 
 
-class TestMetricIntegerValue(models.Model):
+class MetricIntegerValue(models.Model):
     id = models.IntegerField(primary_key=True)
-    Metric = models.ForeignKey('TestCaseMetricValue', on_delete=models.CASCADE)
+    Metric = models.ForeignKey('MetricValue', on_delete=models.CASCADE)
     Value = models.IntegerField()
 
 
 class TestMetricFileValue(models.Model):
     id = models.IntegerField(primary_key=True)
-    Metric = models.ForeignKey('TestCaseMetricValue', on_delete=models.CASCADE)
+    Metric = models.ForeignKey('MetricValue', on_delete=models.CASCADE)
 
 
 class TestMetricBooleanValue(models.Model):
     id = models.IntegerField(primary_key=True)
-    Metric = models.ForeignKey('TestCaseMetricValue', on_delete=models.CASCADE)
+    Metric = models.ForeignKey('MetricValue', on_delete=models.CASCADE)
     Value = models.BooleanField()

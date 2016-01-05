@@ -7,11 +7,11 @@
 
     <h1>Tests found:</h1>
 
-    <p>[<a href="{% url 'django-measure-test:reload' %}">Reload</a>]</p>
+    <p>[<a href="{% url 'django-pyxperiment:reload' %}">Reload</a>]</p>
 
     <ul>
         {% for test in tests %}
-        <li><a href="{% url 'django-measure-test:test.view' test.Type %}">{{ test.Type }}</a>
+        <li><a href="{% url 'django-pyxperiment:test.view' test.Type %}">{{ test.Type }}</a>
             <ul>
             {% for c in test.Cases %}
                 <li>{{ c.Name }}</li>
