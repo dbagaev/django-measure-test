@@ -1,5 +1,7 @@
 <h1>Test: {{ test.Type }}</h1>
 
+<p>[<a href="{% url 'django-pyxperiment:test.run' test_id=test.Type %}">Run</a>]</p>
+
 <h2>Metrics</h2>
 <ul>
 {% for m in test.Metrics %}
@@ -14,3 +16,8 @@
 </ul>
 
 <h2>Runs</h2>
+<ul>
+{% for run in runs %}
+    <li><a href="{% url 'django-pyxperiment:run.view' run_id=run.id %}">{{ run.Started }}</a></li>
+{% endfor %}
+</ul>

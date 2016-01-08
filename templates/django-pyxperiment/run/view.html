@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Run @ {{ run.Started }}{% endblock %}
+
+{% block content %}
+<body>
+
+    <h1>Run @ {{ run.Started }}</h1>
+
+    <ul>
+        {% for metric in metrics %}
+        <li>{{ metric.Metric.Name }} = {{ metric.StrValue }}</li>
+        {% endfor%}
+    </ul>
+
+</body>
+</html>
+
+{% endblock %}
