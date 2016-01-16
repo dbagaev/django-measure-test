@@ -7,11 +7,37 @@
 
     <h1>Run @ {{ run.Started }}</h1>
 
+    {% for set in run.ExperimentSetRuns %}
+    <h2>{{ set.ExperimentSet.Type }}</h2>
+
     <ul>
-        {% for metric in metrics %}
-        <li>{{ metric.Metric.Name }} = {{ metric.StrValue }}</li>
+        {% for v in set.Values %}
+        <li>{{ v.Metric.Name }} = {{ v.toStr }}</li>
         {% endfor%}
     </ul>
+
+    <table border="1">
+        <tr>
+            <td></td>
+            {% for v in set.ExperimentRuns.0.Values %}
+            <td>{{ v.Metric.Name }}</td>
+            {% endfor %}
+        </tr>
+
+        {% for exp in set.ExperimentRuns %}
+        <tr>
+            <td>{{ exp.Experiment.Name }}</td>
+            {% for v in exp.Values %}
+            <td>{{ v.toStr }}</td>
+            {% endfor %}
+
+        </tr>
+        {% endfor %}
+
+
+    </table>
+
+    {% endfor %}
 
 </body>
 </html>

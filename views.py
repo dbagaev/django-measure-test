@@ -1,11 +1,10 @@
-from . import models
+from .models import models
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 
-from pyxperiment.experiment import Experiment
+from pyxperiment.experiment import Experiment, Registry
 from pyxperiment.runner import Runner
-from pyxperiment.registry import Registry
 
 import pyxperiment.tests.SimpleTest
 
@@ -22,13 +21,14 @@ def index(request):
 
 def test_view(request, test_id):
 
-    test = models.ExperimentSet.objects.filter(Type=test_id)
-    if len(test) == 0 :
+    exp_set = models.ExperimentSet.objects.filter(Type=test_id)
+    if len(exp_set) == 0 :
         raise Http404
+    exp_set = exp_set[0]
 
     context = {
-        'test': test[0],
-        'runs': models.Run.objects.all()
+        'test': exp_set,
+        'runs': models.ExperimentSetRun.objects.all().prefetch_related()
     }
 
     return render(request, 'django-pyxperiment/test/view.html', context)
@@ -63,6 +63,5 @@ def run_view(request, run_id) :
     run = run[0]
 
     context['run'] = run
-    context['metrics'] = models.MetricValue.objects.filter(Run=run, ExperimentRun=None)
 
     return render(request, 'django-pyxperiment/run/view.html', context)

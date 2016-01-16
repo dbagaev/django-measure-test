@@ -1,10 +1,9 @@
-from . import models
+from .models import models
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, Http404
 
-from pyxperiment.experiment import Experiment
-from pyxperiment.registry import Registry
+from pyxperiment.experiment import Experiment, Registry
 
 
 def reload_cases(test, mdl_test):

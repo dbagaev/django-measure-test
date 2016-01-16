@@ -16,8 +16,22 @@
 </ul>
 
 <h2>Runs</h2>
-<ul>
+
+<table border="1">
+    <tr>
+        <td></td>
+        {% for v in runs.0.Values %}
+            <td>{{ v.Metric.Name }}</td>
+        {% endfor %}
+    </tr>
+
 {% for run in runs %}
-    <li><a href="{% url 'django-pyxperiment:run.view' run_id=run.id %}">{{ run.Started }}</a></li>
+<tr>
+    <td><a href="{% url 'django-pyxperiment:run.view' run_id=run.Run.id %}">{{ run.Started }}</a></td>
+    {% for m in run.Values %}
+        <td>{{ m.toStr }}</td>
+    {% endfor %}
+</tr>
 {% endfor %}
-</ul>
+
+</table>
