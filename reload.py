@@ -28,8 +28,17 @@ def reload_metrics(test, mdl_test):
     for metric in test.AllMetrics():
         mdl_metric = models.Metric.objects.filter(Name=metric[0], ExperimentSet=mdl_test)
         if len(mdl_metric) == 0:
-            mdl_metric = models.Metric(Name=metric[0], Type=metric[1].Type, ExperimentSet=mdl_test)
-            mdl_metric.save()
+            mdl_metric = models.Metric(
+                    Name=metric[0],
+                    ExperimentSet=mdl_test )
+        else :
+            mdl_metric = mdl_metric[0]
+
+        mdl_metric.Type = metric[1].Type
+        mdl_metric.Accumulator = (metric[1]._Accumulator is not None)
+        mdl_metric.save()
+
+
 
 
 def reload(request):

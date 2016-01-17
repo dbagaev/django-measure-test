@@ -10,6 +10,9 @@ class ExperimentSet(models.Model):
     def Experiments(self):
         return Experiment.objects.filter(ExperimentSet=self)
 
+    def __str__(self) :
+        return self.Type
+
     def Metrics(self):
         return Metric.objects.filter(ExperimentSet=self).order_by('Name')
 
@@ -24,6 +27,11 @@ class Experiment(models.Model):
 
     def Metrics(self):
         return Metric.objects.filter(Experiment=self).order_by('Name')
+
+
+    def __str__(self) :
+        return self.Name + " @ " + self.ExperimentSet.Type
+
 
 
 class Run(models.Model):
@@ -70,8 +78,12 @@ class Metric(models.Model):
 
     Name = models.CharField(max_length=64)
     Type = models.IntegerField(choices=VALUE_TYPES)
+    Accumulator = models.BooleanField(default=False)
 
     ExperimentSet = models.ForeignKey('ExperimentSet', on_delete=models.CASCADE)
+
+    def __str__(self) :
+        return self.ExperimentSet.Type + " :: " + self.Name
 
 class MetricValue(models.Model):
     ExperimentRun = models.ForeignKey('ExperimentRun', on_delete=models.CASCADE, db_constraint=False, null=True)
