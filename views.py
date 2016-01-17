@@ -77,19 +77,23 @@ def get_values(request, test_id, case_id = None) :
             raise Exception("Cannot find test '%s'" % test_id)
 
         data = []
+        metrics = [m.Name for m in exp_set.Metrics() if m.Accumulator ]
 
         runs = models.ExperimentSetRun.objects.filter(ExperimentSet=exp_set)
         for run in runs :
-            run_data = {
-                'label': run.Started,
-                'values': {}
-            }
+            values = {}
             for val in run.Values :
-                run_data['values'][val.Metric.Name] = val.Value
+                values[val.Metric.Name] = val.Value
 
-            data.append(run_data)
+            data.append({
+                'label': run.Started,
+                'values': values
+            })
 
-        response['data'] = data
+        response['data'] = {
+            'values' : data,
+            'metrics': metrics
+        }
 
 
     except Exception as e :
