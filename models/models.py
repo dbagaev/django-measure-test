@@ -2,6 +2,7 @@ from django.db import models
 
 from pyxperiment.metric import Metric as exp_Metric
 
+
 # Create your models here.
 class ExperimentSet(models.Model):
     Type = models.CharField(max_length=128)
@@ -11,6 +12,10 @@ class ExperimentSet(models.Model):
 
     def Metrics(self):
         return Metric.objects.filter(ExperimentSet=self).order_by('Name')
+
+    @staticmethod
+    def findByName(name) :
+        return ExperimentSet.objects.filter(Type=name)[:1].get()
 
 
 class Experiment(models.Model):
@@ -75,34 +80,28 @@ class MetricValue(models.Model):
     Metric = models.ForeignKey('Metric', on_delete=models.CASCADE)
 
     @property
-    def toStr(self) :
-        if self.Metric.Type == exp_Metric.TYPE_FLOAT :
-            v = MetricFloatValue.objects.filter(MetricValue=self)
-            if len(v) == 0 :
-                return ""
+    def Value(self) :
+        try :
+            if self.Metric.Type == exp_Metric.TYPE_FLOAT :
+                v = MetricFloatValue.objects.filter(MetricValue=self)[:1].get()
+                return v.Value
+            elif self.Metric.Type == exp_Metric.TYPE_INTEGER :
+                v = MetricIntegerValue.objects.filter(MetricValue=self)[:1].get()
+                return v.Value
+            elif self.Metric.Type == exp_Metric.TYPE_STRING :
+                v = MetricStringValue.objects.filter(MetricValue=self)[:1].get()
+                return v.Value
+            elif self.Metric.Type == exp_Metric.TYPE_BOOLEAN :
+                v = MetricBooleanValue.objects.filter(MetricValue=self)[:1].get()
+                return v.Value
             else :
-                return str(v[0].Value)
-        elif self.Metric.Type == exp_Metric.TYPE_INTEGER :
-            v = MetricIntegerValue.objects.filter(MetricValue=self)
-            if len(v) == 0 :
-                return ""
-            else :
-                return str(v[0].Value)
-        elif self.Metric.Type == exp_Metric.TYPE_STRING :
-            v = MetricStringValue.objects.filter(MetricValue=self)
-            if len(v) == 0 :
-                return ""
-            else :
-                return str(v[0].Value)
-        elif self.Metric.Type == exp_Metric.TYPE_BOOLEAN :
-            v = MetricBooleanValue.objects.filter(MetricValue=self)
-            if len(v) == 0 :
-                return ""
-            else :
-                return str(v[0].Value)
+                return None
+        except :
+            return None
 
-        else :
-            return ""
+    @property
+    def toStr(self) :
+        return str(self.Value)
 
 
 class MetricStringValue(models.Model):

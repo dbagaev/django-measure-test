@@ -17,4 +17,7 @@ urlpatterns = [
 
     url(r'^run/(?P<run_id>[0-9]+)/view$', views.run_view, name='run.view'),
 
+    url(r'^test/(?P<test_id>[0-9A-Za-z]+)/values', views.get_values, name='test.values.get'),
+    #url(r'^test/(?P<test_id>[0-9A-Za-z]+)/case/(?P<case_id>[0-9]+)/values', views.get_values, name='test.case.values.get')
+
 ]

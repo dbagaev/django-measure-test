@@ -1,7 +1,7 @@
 from .models import models
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 
 from pyxperiment.experiment import Experiment, Registry
 from pyxperiment.runner import Runner
@@ -65,3 +65,35 @@ def run_view(request, run_id) :
     context['run'] = run
 
     return render(request, 'django-pyxperiment/run/view.html', context)
+
+def get_values(request, test_id, case_id = None) :
+    response = {
+        'data': None,
+        'result': 0
+    }
+    try :
+        exp_set = models.ExperimentSet.findByName(test_id)
+        if exp_set is None :
+            raise Exception("Cannot find test '%s'" % test_id)
+
+        data = []
+
+        runs = models.ExperimentSetRun.objects.filter(ExperimentSet=exp_set)
+        for run in runs :
+            run_data = {
+                'label': run.Started,
+                'values': {}
+            }
+            for val in run.Values :
+                run_data['values'][val.Metric.Name] = val.Value
+
+            data.append(run_data)
+
+        response['data'] = data
+
+
+    except Exception as e :
+        response['result'] = 1
+        response['message'] = str(e)
+
+    return JsonResponse(response)
