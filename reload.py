@@ -7,9 +7,12 @@ from pyxperiment.experiment import Experiment, Registry
 
 
 def reload_cases(test, mdl_test):
+
+    experiments_found  = test.findExperiments()
+
     for mdl_case in models.Experiment.objects.filter(ExperimentSet=mdl_test):
         case_found = False
-        for case in test.findExperiments():
+        for case in experiments_found:
             if case.Name == mdl_case.Name:
                 case_found = True
                 break
@@ -17,7 +20,7 @@ def reload_cases(test, mdl_test):
         if not case_found:
             mdl_case.delete()
 
-    for case in test.findExperiments():
+    for case in experiments_found:
         mdl_case = models.Experiment.objects.filter(Name=case.Name, ExperimentSet=mdl_test)
         if len(mdl_case) == 0:
             mdl_case = models.Experiment(Name=case.Name, ExperimentSet=mdl_test)
